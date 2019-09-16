@@ -1,326 +1,144 @@
+/**
+ * @generated
+ * It should not be necessary to edit this file directly.
+ * The template for this file is: generate/templates/types-index-file.js
+ */
+
 /// <reference lib="es2018" />
 /// <reference lib="esnext.asynciterable" />
 
-import { IsFinite, Prepend, Repeat, Reverse } from 'typescript-tuple'
-import { FromTuple as UnionFromTuple, RangeZero as UnionRange } from 'typescript-union'
-
-type AsyncIterableLike<T> = AsyncIterable<T> | Iterable<T>
-type ReasonableNumber = UnionRange<32>
-
-/**
- * Function signature of `permutations` and `combinations`
- */
-interface CombinationsPermutations {
-  <Iter extends Iterable<any>>(iterable: Iter, r?: undefined): CombinationsPermutationsByIterable<Iter>
-  <T, R extends number>(iterable: Iterable<T>, r: R): CombinationsPermutationsByLength<T, R>
-}
-
-type CombinationsPermutationsByIterable<Iter extends Iterable<any>> =
-  Iter extends Iterable<infer T>
-    ? Iter extends T[]
-      ? CombinationsPermutationsByLength<T, Iter['length']>
-      : IterableIterator<T[]>
-    : never
-
-type CombinationsPermutationsByLength<T, R extends number> =
-  IterableIterator<R extends ReasonableNumber ? Repeat<T, R> : T[]>
-
-/**
- * Helper generic for `product` function
- * This creates element type of returning iterable from argument types
- *
- * @example
- *   `ProductReturnElement<[string[], number[], boolean[]]>` is `[string, number, boolean]`
- */
-type ProductReturnElement<Args extends Array<Iterable<any>>, Holder extends any[] = []> = {
-  empty: Holder,
-  many: ((...a: Reverse<Args>) => any) extends ((a: infer Last, ...b: infer ReversedRest) => any)
-    ? ProductReturnElement<
-      Reverse<ReversedRest>,
-      Prepend<Holder, Last extends Iterable<infer T> ? T : never>
-    >
-    : never,
-  infinite: Args extends Array<Array<infer T>> ? T[] : never
-}[
-  Args extends [] ? 'empty' : IsFinite<Args, 'many', 'infinite'>
-]
-
-type RangeReturn<R extends number> =
-  IterableIterator<R extends ReasonableNumber ? UnionRange<R> : number>
-
-// Sync
-export declare function keys (obj: { [id: string]: any }): IterableIterator<string>
-export declare function values<T> (obj: { [id: string]: T }): IterableIterator<T>
-export declare function entries<T> (obj: { [id: string]: T }): IterableIterator<[string, T]>
-
-export declare function batch<T> (n: number): (iterable: Iterable<T>) => IterableIterator<T[]>
-export declare function batch<T> (n: number, iterable: Iterable<T>): IterableIterator<T[]>
-
-export declare function chain<T> (...iterables: Array<Iterable<T>>): IterableIterator<T>
-export declare function concat<T> (...iterables: Array<Iterable<T>>): IterableIterator<T>
-
-export declare const combinations: CombinationsPermutations
-export declare const combinationsWithReplacement: CombinationsPermutations
-
-export declare function compose<T> (fns: Iterable<(_: T) => T>): IterableIterator<T>
-
-export declare function compress<T> (iterable: Iterable<T>, compress: Iterable<boolean>): IterableIterator<T>
-
-export declare function consume<T> (func: (item: T) => void): (iterable: Iterable<T>) => void
-export declare function consume<T> (func: (item: T) => void, iterable: Iterable<T>): void
-
-export declare function count (opts: number | { start: number, end?: number, step?: number }): IterableIterator<number>
-
-export declare function cycle<Iter extends Iterable<any>> (iterable: Iter):
-  Iter extends any[] ? IterableIterator<UnionFromTuple<Iter>> : Iter
-
-export declare function dropWhile<T> (func: (item: T) => boolean): (iterable: Iterable<T>) => IterableIterator<T>
-export declare function dropWhile<T> (func: (item: T) => boolean, iterable: Iterable<T>): IterableIterator<T>
-
-export declare function enumerate<T> (iterable: Iterable<T>, start?: number): IterableIterator<[number, T]>
-
-export declare function execute<T, Args extends any[] = any[]> (
-  func: (...args: Args) => T,
-  ...args: Args
-): IterableIterator<T>
-
-export declare function every<T> (func: (item: T) => boolean): (iterable: Iterable<T>) => boolean
-export declare function every<T> (func: (item: T) => boolean, iterable: Iterable<T>): boolean
-
-export declare function filter<T> (func: (item: T) => boolean): (iterable: Iterable<T>) => IterableIterator<T>
-export declare function filter<T> (func: (item: T) => boolean, iterable: Iterable<T>): IterableIterator<T>
-
-export declare function find<T> (func: (item: T) => boolean): (iterable: Iterable<T>) => T | null
-export declare function find<T> (func: (item: T) => boolean, iterable: Iterable<T>): T | null
-
-export declare function first<Iter extends Iterable<any>> (iterable: Iter):
-  Iter extends [] ? undefined :
-  Iter extends [infer First, ...any[]] ? First :
-  Iter extends Iterable<infer T> ? T | undefined :
-  never
-
-export declare function flatMap<T, O> (func: (item: T) => Iterable<O>):
-  (iter: Iterable<T>) => IterableIterator<O>
-export declare function flatMap<T, O> (
-  func: (item: T) => Iterable<O>,
-  iter: Iterable<T>
-): IterableIterator<O>
-
-export declare function groupBy (key: null):
-  <T>(iterable: Iterable<T>) => IterableIterator<[T, IterableIterator<T>]>
-export declare function groupBy<T> (
-  key: null,
-  iterable: Iterable<T>
-): IterableIterator<[T, IterableIterator<T>]>
-export declare function groupBy<T, K> (key: (item: T) => K):
-  (iterable: Iterable<T>) => IterableIterator<[K, IterableIterator<T>]>
-export declare function groupBy<T, K> (
-  key: (item: T) => K,
-  iterable: Iterable<T>
-): IterableIterator<[K, IterableIterator<T>]>
-
-export declare function iterable<T> (iterator: { next: () => {value: T} } | Iterable<T>): IterableIterator<T>
-
-export declare function map<T, O> (func: (item: T) => O): (iter: Iterable<T>) => IterableIterator<O>
-export declare function map<T, O> (func: (item: T) => O, iter: Iterable<T>): IterableIterator<O>
-
-export declare const permutations: CombinationsPermutations
-
-export declare function product<Args extends Array<Iterable<any>>> (...iterables: Args):
-  IterableIterator<ProductReturnElement<Args>>
-
-export declare function range<R extends number> (r: R): RangeReturn<R>
-export declare function range (opts: { start: number, end?: number, step?: number }): IterableIterator<number>
-
-export declare function reduce<T, O> (func: (acc: O, item: T, c: number) => O): (iterable: Iterable<T>) => O
-export declare function reduce<T, O> (initial: O, func: (acc: O, item: T, c: number) => O):
-    (iterable: Iterable<T>) => O
-export declare function reduce<T, O> (func: (acc: O, item: T, c: number) => O, iterable: Iterable<T>): O
-export declare function reduce<T, O> (initial: O, func: (acc: O, item: T, c: number) => O, iterable: Iterable<T>): O
-
-export declare function regexpExec (re: RegExp): (str: string) => IterableIterator<string>
-export declare function regexpExec (re: RegExp, str: string): IterableIterator<string>
-
-export declare function regexpSplit (re: RegExp): (str: string) => IterableIterator<string>
-export declare function regexpSplit (re: RegExp, str: string): IterableIterator<string>
-
-export declare function regexpSplitIter (re: RegExp): (iterable: Iterable<string>) => IterableIterator<string>
-export declare function regexpSplitIter (re: RegExp, iterable: Iterable<string>): IterableIterator<string>
-
-export declare function regexpExecIter (re: RegExp): (iterable: Iterable<string>) => IterableIterator<string>
-export declare function regexpExecIter (re: RegExp, iterable: Iterable<string>): IterableIterator<string>
-
-export declare function splitLines (iterable: Iterable<string>): IterableIterator<string>
-
-export declare function repeat<T> (obj: T, times?: number): IterableIterator<T>
-
-export declare function size<Iter extends Iterable<any>> (iterable: Iter):
-  Iter extends any[] ? Iter['length'] : number
-
-export declare function slice<T> (
-    opts: number | { start: number, end?: number, step?: number },
-    iterable: Iterable<T>
-): IterableIterator<number>
-
-export declare function some<T> (func: (item: T) => boolean): (iterable: Iterable<T>) => boolean
-export declare function some<T> (func: (item: T) => boolean, iterable: Iterable<T>): boolean
-
-export declare function takeWhile<T> (func: (item: T) => boolean): (iterable: Iterable<T>) => IterableIterator<T>
-export declare function takeWhile<T> (func: (item: T) => boolean, iterable: Iterable<T>): IterableIterator<T>
-
-export declare function tap<T> (func: (item: T, c: number) => any, iterable: Iterable<T>): IterableIterator<T>
-
-export declare function takeSorted<T> (
-    n: number,
-    func?: (item: T) => boolean
-): (iterable: Iterable<T>) => IterableIterator<T>
-export declare function takeSorted<T> (
-    n: number,
-    func?: (item: T) => boolean,
-    iterable?: Iterable<T>
-): IterableIterator<T>
-
-export declare function tee<T> (iterable: Iterable<T>, n?: number): Array<IterableIterator<T>>
-
-export declare function toArray<T> (iterable: Iterable<T>): T[]
-
-export declare function zipLongest<T> (...iterables: Array<Iterable<T>>): IterableIterator<T[]>
-export declare function zipAll<T> (...iterables: Array<Iterable<T>>): IterableIterator<T[]>
-export declare function zip<T> (...iterables: Array<Iterable<T>>): IterableIterator<T[]>
-
-/**
- * @deprecated Use `iterable` instead
- */
-export declare function iter<T> (iterable: Iterable<T>): IterableIterator<T>
-
-// Async
-export declare function asyncBatch<T> (n: number): (iterable: AsyncIterableLike<T>) => AsyncIterableIterator<T>
-export declare function asyncBatch<T> (n: number, iterable: AsyncIterableLike<T>): AsyncIterableIterator<T>
-
-export declare function asyncChain<T> (...iterables: Array<AsyncIterableLike<T>>): AsyncIterableIterator<T>
-export declare function asyncConcat<T> (...iterables: Array<AsyncIterableLike<T>>): AsyncIterableIterator<T>
-
-export declare function asyncConsume<T> (func: (item: T) => void): (iterable: AsyncIterableLike<T>) => void
-export declare function asyncConsume<T> (func: (item: T) => void, iterable: AsyncIterableLike<T>): void
-
-export declare function asyncCompress<T> (
-    iterable: AsyncIterableLike<T>,
-    compress: AsyncIterableLike<boolean>
-): AsyncIterableIterator<T>
-
-export declare function asyncCycle<T> (iterable: AsyncIterableLike<T>): AsyncIterableIterator<T>
-
-export declare function asyncDropWhile<T> (func: (item: T) => boolean):
-    (iterable: AsyncIterableLike<T>) => AsyncIterableIterator<T>
-export declare function asyncDropWhile<T> (func: (item: T) => boolean, iterable: AsyncIterableLike<T>):
-    AsyncIterableIterator<T>
-
-export declare function asyncEnumerate<T> (iterable: AsyncIterableLike<T>, start?: number):
-    AsyncIterableIterator<[number, T]>
-
-export declare function asyncEvery<T> (func: (item: T) => boolean): (iterable: AsyncIterableLike<T>) => boolean
-export declare function asyncEvery<T> (func: (item: T) => boolean, iterable: AsyncIterableLike<T>): boolean
-
-export declare function asyncExecute<T, Args extends any[] = any[]> (
-  func: (...args: Args) => Promise<T>,
-  ...args: Args
-): AsyncIterableIterator<T>
-
-export declare function asyncFilter<T> (func: (item: T) => boolean):
-    (iterable: AsyncIterableLike<T>) => AsyncIterableIterator<T>
-export declare function asyncFilter<T> (func: (item: T) => boolean, iterable: AsyncIterableLike<T>):
-    AsyncIterableIterator<T>
-
-export declare function asyncFind<T> (func: (item: T) => boolean): (iterable: AsyncIterableLike<T>) => T | null
-export declare function asyncFind<T> (func: (item: T) => boolean, iterable: AsyncIterableLike<T>): T | null
-
-export declare function asyncFirst<T> (iterable: AsyncIterableLike<T>): T | undefined
-
-export declare function asyncFlatMap<T, O> (func: (item: T) => AsyncIterableLike<O>):
-    (iter: AsyncIterableLike<T>) => AsyncIterableIterator<O>
-export declare function asyncFlatMap<T, O> (func: (item: T) => AsyncIterableLike<O>, iter: AsyncIterableLike<T>):
-    AsyncIterableIterator<O>
-
-export declare function asyncGroupBy (key: null):
-  <T>(iterable: AsyncIterableLike<T>) => AsyncIterableIterator<[T, AsyncIterableIterator<T>]>
-export declare function asyncGroupBy<T> (
-  key: null,
-  iterable: AsyncIterableLike<T>
-): AsyncIterableIterator<[T, AsyncIterableIterator<T>]>
-export declare function asyncGroupBy<T, K> (key: (item: T) => K):
-  (iterable: AsyncIterableLike<T>) => AsyncIterableIterator<[K, AsyncIterableIterator<T>]>
-export declare function asyncGroupBy<T, K> (key: (item: T) => K, iterable: AsyncIterableLike<T>):
-  AsyncIterableIterator<[K, AsyncIterableIterator<T>]>
-
-export declare function asyncIterable<T> (
-  asyncIterator: { next: () => Promise<{value: T}> } | AsyncIterableLike<T>
-): AsyncIterableIterator<T>
-
-export declare function asyncMap<T, O> (func: (item: T) => O): (iter: AsyncIterableLike<T>) => AsyncIterableIterator<O>
-export declare function asyncMap<T, O> (func: (item: T) => O, iter: AsyncIterableLike<T>): AsyncIterableIterator<O>
-
-export declare function asyncReduce<T, O> (func: (acc: O, item: T, c: number) => O):
-    (iterable: AsyncIterableLike<T>) => O
-export declare function asyncReduce<T, O> (initial: O, func: (acc: O, item: T, c: number) => O):
-    (iterable: AsyncIterableLike<T>) => O
-export declare function asyncReduce<T, O> (func: (acc: O, item: T, c: number) => O, iterable: AsyncIterableLike<T>): O
-export declare function asyncReduce<T, O> (
-    initial: O,
-    func: (acc: O, item: T, c: number) => O,
-    iterable: AsyncIterableLike<T>
-): O
-
-export declare function asyncSize (iterable: AsyncIterable<any>): number
-
-export declare function asyncSlice<T> (
-    opts: number | { start: number, end?: number, step?: number },
-    iterable: AsyncIterableLike<T>
-): AsyncIterableIterator<number>
-
-export declare function asyncTakeWhile<T> (func: (item: T) => boolean):
-    (iterable: AsyncIterableLike<T>) => AsyncIterableIterator<T>
-export declare function asyncTakeWhile<T> (func: (item: T) => boolean, iterable: AsyncIterableLike<T>):
-    AsyncIterableIterator<T>
-
-export declare function asyncTap<T> (func: (item: T, c: number) => any, iterable: AsyncIterableLike<T>):
-    AsyncIterableIterator<T>
-
-export declare function asyncTakeSorted<T> (n: number, func?: (item: T) => boolean):
-    (iterable: AsyncIterableLike<T>) => AsyncIterableLike<T>
-export declare function asyncTakeSorted<T> (n: number, func?: (item: T) => boolean, iterable?: AsyncIterableLike<T>):
-    AsyncIterableLike<T>
-
-export declare function asyncTee<T> (iterable: AsyncIterableLike<T>, n?: number): Array<AsyncIterableIterator<T>>
-
-export declare function asyncToArray<T> (iterable: AsyncIterableLike<T>): T[]
-
-export declare function asyncZipLongest<T> (...iterables: Array<AsyncIterableLike<T>>): AsyncIterableIterator<T[]>
-export declare function asyncZipAll<T> (...iterables: Array<AsyncIterableLike<T>>): AsyncIterableIterator<T[]>
-
-export declare function asyncZip<T> (...iterables: Array<AsyncIterableLike<T>>): AsyncIterableIterator<T[]>
-
-export declare function asyncRegexpSplitIter (re: RegExp):
-    (iterable: AsyncIterableLike<string>) => AsyncIterableLike<string>
-export declare function asyncRegexpSplitIter (re: RegExp, iterable: AsyncIterableLike<string>):
-    AsyncIterableLike<string>
-
-export declare function asyncRegexpExecIter (re: RegExp):
-    (iterable: AsyncIterableLike<string>) => AsyncIterableLike<string>
-export declare function asyncRegexpExecIter (re: RegExp, iterable: AsyncIterableLike<string>):
-    AsyncIterableLike<string>
-
-export declare function asyncSplitLines (iterable: AsyncIterableLike<string>): AsyncIterableLike<string>
-
-export declare function asyncSome<T> (func: (item: T) => boolean): (iterable: AsyncIterableLike<T>) => boolean
-export declare function asyncSome<T> (func: (item: T) => boolean, iterable: AsyncIterableLike<T>): boolean
-
-export declare function asyncBuffer<T> (n: number): (iterable: AsyncIterableLike<T>) => AsyncIterableIterator<T>
-export declare function asyncBuffer<T> (n: number, iterable: AsyncIterableLike<T>): AsyncIterableIterator<T>
-
-export declare function asyncThrottle<T> (n: number): (iterable: AsyncIterableLike<T>) => AsyncIterableIterator<T>
-export declare function asyncThrottle<T> (n: number, iterable: AsyncIterableLike<T>): AsyncIterableIterator<T>
-
-/**
- * @deprecated Use `asyncIterable` instead
- */
-export declare function asyncIter<T> (syncIterable: AsyncIterableLike<T>): AsyncIterableIterator<T>
+export { default as apply } from './apply';
+export { default as batch } from './batch';
+export { default as call } from './call';
+export { default as collate } from './collate';
+export { default as combinations } from './combinations';
+export { default as combinationsWithReplacement } from './combinations-with-replacement';
+export { default as compose } from './compose';
+export { default as compress } from './compress';
+export { default as concat } from './concat';
+export { default as consume } from './consume';
+export { default as cursor } from './cursor';
+export { default as cycle } from './cycle';
+export { default as dropWhile } from './drop-while';
+export { default as entries } from './entries';
+export { default as enumerate } from './enumerate';
+export { default as equal } from './equal';
+export { default as every } from './every';
+export { default as execPipe } from './exec-pipe';
+export { default as execute } from './execute';
+export { default as filter } from './filter';
+export { default as find } from './find';
+export { default as first } from './first';
+export { default as firstOr } from './first-or';
+export { default as flat } from './flat';
+export { default as flatMap } from './flat-map';
+export { default as fork } from './fork';
+export { default as groupBy } from './group-by';
+export { default as includes } from './includes';
+export { default as includesAny } from './includes-any';
+export { default as includesAnySubseq } from './includes-any-subseq';
+export { default as includesSubseq } from './includes-subseq';
+export { default as interleave } from './interleave';
+export { default as interpose } from './interpose';
+export { default as isEmpty } from './is-empty';
+export { default as isSorted } from './is-sorted';
+export { default as join } from './join';
+export { default as joinAsStringWith } from './join-as-string-with';
+export { default as joinWith } from './join-with';
+export { default as joinWithSubseq } from './join-with-subseq';
+export { default as keys } from './keys';
+export { default as map } from './map';
+export { default as permutations } from './permutations';
+export { default as pipe } from './pipe';
+export { default as product } from './product';
+export { default as range } from './range';
+export { default as reduce } from './reduce';
+export { default as regexpExec } from './regexp-exec';
+export { default as regexpSplit } from './regexp-split';
+export { default as repeat } from './repeat';
+export { default as size } from './size';
+export { default as slice } from './slice';
+export { default as some } from './some';
+export { default as split } from './split';
+export { default as splitAt } from './split-at';
+export { default as splitOn } from './split-on';
+export { default as splitOnAny } from './split-on-any';
+export { default as splitOnAnySubseq } from './split-on-any-subseq';
+export { default as splitOnSubseq } from './split-on-subseq';
+export { default as splitWith } from './split-with';
+export { default as startsWith } from './starts-with';
+export { default as startsWithAny } from './starts-with-any';
+export { default as startsWithAnySubseq } from './starts-with-any-subseq';
+export { default as startsWithSubseq } from './starts-with-subseq';
+export { default as takeSorted } from './take-sorted';
+export { default as takeWhile } from './take-while';
+export { default as tap } from './tap';
+export { default as toArray } from './to-array';
+export { default as values } from './values';
+export { default as when } from './when';
+export { default as wrap } from './wrap';
+export { default as zip } from './zip';
+export { default as zipAll } from './zip-all';
+export { default as asyncBatch } from './async-batch';
+export { default as asyncBuffer } from './async-buffer';
+export { default as asyncCollate } from './async-collate';
+export { default as asyncCompress } from './async-compress';
+export { default as asyncConcat } from './async-concat';
+export { default as asyncConsume } from './async-consume';
+export { default as asyncCursor } from './async-cursor';
+export { default as asyncCycle } from './async-cycle';
+export { default as asyncDropWhile } from './async-drop-while';
+export { default as asyncEnumerate } from './async-enumerate';
+export { default as asyncEqual } from './async-equal';
+export { default as asyncEvery } from './async-every';
+export { default as asyncExecute } from './async-execute';
+export { default as asyncFilter } from './async-filter';
+export { default as asyncFilterParallel } from './async-filter-parallel';
+export { default as asyncFind } from './async-find';
+export { default as asyncFirst } from './async-first';
+export { default as asyncFirstOr } from './async-first-or';
+export { default as asyncFlat } from './async-flat';
+export { default as asyncFlatMap } from './async-flat-map';
+export { default as asyncFlatMapParallel } from './async-flat-map-parallel';
+export { default as asyncFork } from './async-fork';
+export { default as asyncGroupBy } from './async-group-by';
+export { default as asyncIncludes } from './async-includes';
+export { default as asyncIncludesAny } from './async-includes-any';
+export { default as asyncIncludesAnySubseq } from './async-includes-any-subseq';
+export { default as asyncIncludesSubseq } from './async-includes-subseq';
+export { default as asyncInterleave } from './async-interleave';
+export { default as asyncInterleaveReady } from './async-interleave-ready';
+export { default as asyncInterpose } from './async-interpose';
+export { default as asyncIsEmpty } from './async-is-empty';
+export { default as asyncIsSorted } from './async-is-sorted';
+export { default as asyncJoin } from './async-join';
+export { default as asyncJoinAsStringWith } from './async-join-as-string-with';
+export { default as asyncJoinWith } from './async-join-with';
+export { default as asyncJoinWithSubseq } from './async-join-with-subseq';
+export { default as asyncMap } from './async-map';
+export { default as asyncMapParallel } from './async-map-parallel';
+export { default as asyncReduce } from './async-reduce';
+export { default as asyncSize } from './async-size';
+export { default as asyncSlice } from './async-slice';
+export { default as asyncSome } from './async-some';
+export { default as asyncSplit } from './async-split';
+export { default as asyncSplitAt } from './async-split-at';
+export { default as asyncSplitOn } from './async-split-on';
+export { default as asyncSplitOnAny } from './async-split-on-any';
+export { default as asyncSplitOnAnySubseq } from './async-split-on-any-subseq';
+export { default as asyncSplitOnSubseq } from './async-split-on-subseq';
+export { default as asyncSplitWith } from './async-split-with';
+export { default as asyncStartsWith } from './async-starts-with';
+export { default as asyncStartsWithAny } from './async-starts-with-any';
+export { default as asyncStartsWithAnySubseq } from './async-starts-with-any-subseq';
+export { default as asyncStartsWithSubseq } from './async-starts-with-subseq';
+export { default as asyncTakeSorted } from './async-take-sorted';
+export { default as asyncTakeWhile } from './async-take-while';
+export { default as asyncTap } from './async-tap';
+export { default as asyncThrottle } from './async-throttle';
+export { default as asyncToArray } from './async-to-array';
+export { default as asyncWrap } from './async-wrap';
+export { default as asyncZip } from './async-zip';
+export { default as asyncZipAll } from './async-zip-all';
+
+export * from './index-interfaces';

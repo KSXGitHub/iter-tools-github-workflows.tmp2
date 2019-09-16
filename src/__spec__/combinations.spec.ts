@@ -1,26 +1,20 @@
-import assert from 'static-type-assert'
-import * as iter from '../index'
+import assert from 'static-type-assert';
+import { combinations } from '..';
 
-assert<
-  IterableIterator<[number, number, number]>
->(iter.combinations([0, 1, 2, 3], 3))
+declare var Ø: never;
 
-assert<
-  IterableIterator<number[]>
->(iter.combinations([0, 1, 2, 3], Number()))
+assert<Iterable<[number, number, number]>>(combinations(3, Ø as Array<number>));
 
-assert<
-  IterableIterator<number[]>
->(iter.combinations([0, 1, 2, 3], 999))
+assert<number>(combinations(3, Ø as Array<number>).size);
 
-assert<
-  IterableIterator<[string, string, string]>
->(iter.combinations(iter.iterable(''), 3))
+assert<Iterable<number[]>>(combinations(Ø as number, Ø as Array<number>));
 
-assert<
-  IterableIterator<[number, number, number, number]>
->(iter.combinations([0, 1, 2, 3] as [number, number, number, number]))
+assert<Iterable<number[]>>(combinations(Ø as 999, Ø as Array<number>));
 
-assert<
-  IterableIterator<string[]>
->(iter.combinations(iter.iterable('')))
+assert<Iterable<[string, string, string]>>(combinations(3, Ø as string));
+
+assert<Iterable<[number, number, number, number]>>(
+  combinations(Ø as [number, number, number, number]),
+);
+
+assert<Iterable<string[]>>(combinations(Ø as string));

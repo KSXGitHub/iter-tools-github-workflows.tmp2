@@ -1,14 +1,11 @@
-import assert from 'static-type-assert'
-import * as iter from '../index'
+import assert from 'static-type-assert';
+import { GeneratorIterator } from '../internal/iterable';
+import { values } from '..';
 
-assert<
-  IterableIterator<number>
->(iter.values({ foo: 42 }))
+declare var Ø: never;
 
-assert<
-  IterableIterator<string | null>
->(iter.values({ foo: '', bar: null }))
+assert<GeneratorIterator<number>>(values(Ø as { foo: number }));
 
-assert<
-  IterableIterator<never>
->(iter.values({}))
+assert<GeneratorIterator<string | null>>(values(Ø as { foo: string, bar: null }));
+
+assert<GeneratorIterator<never>>(values(Ø as {}));
